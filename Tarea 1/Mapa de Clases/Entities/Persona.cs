@@ -15,5 +15,6 @@ namespace Mapa_de_Clases.Entities
         public string Direccion { get; set; }
         public string Telefono { get; set; }
         public string Cedula { get; set; }
+        public Roles Rol { get; set; }
     }
 }
