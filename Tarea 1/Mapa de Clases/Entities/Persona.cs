@@ -16,5 +16,17 @@ namespace Mapa_de_Clases.Entities
         public string Telefono { get; set; }
         public string Cedula { get; set; }
         public Roles Rol { get; set; }
+
+        public Persona(int id, string nombre, string apellido, int edad, string direccion, string telefono, string cedula, Roles rol)
+        {
+            Id = id;
+            Nombre = nombre;
+            Apellido = apellido;
+            Edad = edad;
+            Direccion = direccion;
+            Telefono = telefono;
+            Cedula = cedula;
+            Rol = rol;
+        }
     }
 }
