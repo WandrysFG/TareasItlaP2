@@ -94,7 +94,10 @@ namespace StellarBoocks.API.Controllers
             }
 
             _context.Users.Remove(user);
+<<<<<<< HEAD
             _context.SaveChanges();
+=======
+>>>>>>> b4e6163f0f013568f515d714c24c3ec950d6d755
             return NoContent();
         }
     }
