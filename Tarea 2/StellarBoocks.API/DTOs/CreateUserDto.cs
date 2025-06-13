@@ -1,16 +1,10 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
-namespace StelarsBooks.API.Entities
+namespace StellarBoocks.API.DTOs
 {
-    [Table("Usuarios")]
-    public class User
+    public class CreateUserDto
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required, StringLength(50)]
         public string Nombre { get; set; }
 
@@ -26,9 +20,7 @@ namespace StelarsBooks.API.Entities
         [Required, StringLength(20)]
         public string TipoUsuario { get; set; } = "Lector";
 
-        [Column(TypeName = "date")]
-        public DateTime FechaRegistro { get; set; } = DateTime.Today;
-
         public bool Estado { get; set; } = true;
     }
+
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StelarsBooks.API.Entities;
-using StelarsBooks.API.Entities;
+using StellarBoocks.API.Data;
+using StellarBoocks.API.DTOs;
 
 namespace StellarBoocks.API.Controllers
 {
@@ -8,26 +9,24 @@ namespace StellarBoocks.API.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private List<User> _users;
+        private readonly StellarBocksApplicationDbContext _context;
 
-        public UsersController() 
-        { 
-            _users = new List<User>();
-            _users.Add(new User { Id = 1, Nombre = "Juan", Apellido = "Pérez", Email = "juan.perez@example.com", Contraseña = "123456", TipoUsuario = "Lector", FechaRegistro = DateTime.Today, Estado = true});
-            _users.Add(new User { Id = 2, Nombre = "María", Apellido = "Gómez", Email = "maria.gomez@example.com", Contraseña = "abcdef", TipoUsuario = "Administrador", FechaRegistro = DateTime.Today, Estado = true });
-            _users.Add(new User { Id = 3, Nombre = "Carlos", Apellido = "Ramírez", Email = "carlos.ramirez@example.com", Contraseña = "qwerty123", TipoUsuario = "Lector", FechaRegistro = DateTime.Today, Estado = false });
+        public UsersController(StellarBocksApplicationDbContext context) 
+        {
+            _context = context;
         }
 
         [HttpGet]
         public IActionResult GetUsers()
         {
-            return Ok(_users);
+            var users = _context.Users.ToList();
+            return Ok(users);
         }
 
         [HttpGet("{id:int}")]
         public IActionResult GetUserById(int id)
         {
-            var user = _users.Where(u => u.Id == id).FirstOrDefault();
+            var user = _context.Users.Where(u => u.Id == id).FirstOrDefault();
             if (user == null)
             {
                 return NotFound($"User with ID {id} not found.");
@@ -36,53 +35,66 @@ namespace StellarBoocks.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        public IActionResult CreateUser([FromBody] CreateUserDto request)
         {
-            if (user == null)
+            if (request == null)
             {
                 return BadRequest("User cannot be null.");
             }
 
-            user.Id = _users.Count + 1;
-            user.FechaRegistro = DateTime.Now;
-            return Ok(user);
+            var user = new User
+            {
+                Nombre = request.Nombre,
+                Apellido = request.Apellido,
+                Email = request.Email,
+                Contraseña = request.Contraseña,
+                TipoUsuario = request.TipoUsuario,
+                Estado = request.Estado,
+                FechaRegistro = DateTime.UtcNow
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return Ok(new {id = user.Id});
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] User user)
+        public IActionResult UpdateUser(int id, [FromBody] User request)
         {
-            if (user == null)
+            if (request == null)
             {
                 return BadRequest("User is null or ID mismatch.");
             }
 
-            var existingUser = _users.FirstOrDefault(u => u.Id == id);
+            var existingUser = _context.Users.FirstOrDefault(u => u.Id == id);
             if (existingUser == null)
             {
                 return NotFound($"User with ID {id} not found.");
             }
 
-            existingUser.Nombre = user.Nombre;
-            existingUser.Apellido = user.Apellido;
-            existingUser.Email = user.Email;
-            existingUser.Contraseña = user.Contraseña;
-            existingUser.TipoUsuario = user.TipoUsuario;
-            existingUser.Estado = user.Estado;
+            existingUser.Nombre = request.Nombre;
+            existingUser.Apellido = request.Apellido;
+            existingUser.Email = request.Email;
+            existingUser.Contraseña = request.Contraseña;
+            existingUser.TipoUsuario = request.TipoUsuario;
+            existingUser.Estado = request.Estado;
 
-            return Ok(_users);
+            _context.Users.Update(existingUser);
+            _context.SaveChanges();
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteUser(int id)
         {
-            var user = _users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
             {
                 return NotFound($"User with ID {id} not found.");
             }
 
-            _users.Remove(user);
-            return Ok(_users);
+            _context.Users.Remove(user);
+            return NoContent();
         }
     }
 }
