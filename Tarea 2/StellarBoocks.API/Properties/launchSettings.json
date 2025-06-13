@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
@@ -9,6 +9,14 @@
     }
   },
   "profiles": {
+    "StellarBoocks.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59304;http://localhost:59305"
+    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
